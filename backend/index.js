@@ -17,7 +17,7 @@ mongoose
 const app = express()
 
 app.use(
-    cors({ origin: 'https://androy-mern-blog.netlify.app/', credentials: true })
+    cors({ origin: 'https://androy-mern-blog.netlify.app', credentials: true })
 )
 app.use(cookieParser())
 app.use(express.json())
