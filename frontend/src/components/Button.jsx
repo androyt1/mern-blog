@@ -1,19 +1,22 @@
 import PropTypes from 'prop-types'
-const Button = ({ children, type, handleClick, className }) => {
+
+const Button = ({ type, children, className, handleClick }) => {
     return (
         <button
             type={type}
             onClick={handleClick}
-            className={`px-6 py-2 bg-slate-600 text-slate-50 rounded-md mt-4 ${className}`}
+            className={`${className} p-2 md:p-3 w-full mt-3 md:mt-0  bg-slate-600 text-slate-100 font-semibold rounded-md md:rounded-xl placeholder-slate-300 shadow-sm shadow-slate-300  `}
         >
             {children}
         </button>
     )
 }
+
 Button.propTypes = {
+    type: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
-    type: PropTypes.string,
-    handleClick: PropTypes.func,
     className: PropTypes.string,
+    handleClick: PropTypes.func,
 }
+
 export default Button

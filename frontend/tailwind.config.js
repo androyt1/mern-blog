@@ -2,7 +2,16 @@
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            fill: {
+                blue: 'blue',
+                red: 'red',
+                white: 'white',
+            },
+            backgroundImage: {
+                bgimg: 'url(home.jpg)',
+            },
+        },
     },
     plugins: [],
 }

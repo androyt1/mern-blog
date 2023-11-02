@@ -4,18 +4,18 @@ import AsyncHandler from 'express-async-handler'
 import User from '../models/User.model.js'
 import jwt from 'jsonwebtoken'
 
-const register = AsyncHandler(async (req, res) => {
+const register = AsyncHandler(async (req, res, next) => {
     const { firstname, lastname, email, password } = req.body
-    if (!email) {
-        throw new Error('Email is required')
-    }
     try {
+        if (!email) {
+            throw new Error('Email is required')
+        }
         const existingUser = await User.findOne({ email: email })
         if (existingUser) {
             throw new Error('User already exist, please login to continue ')
         }
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 
     try {
@@ -33,14 +33,14 @@ const register = AsyncHandler(async (req, res) => {
             throw new Error('User avatar is required')
         }
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
     const data = {}
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
         data.password = hashedPassword
     } catch (error) {
-        throw new Error('Password hashing failed ', error)
+        return next('Password hashing failed ', error)
     }
     try {
         const result = await cloudinary.uploader.upload(req.file.path)
@@ -48,8 +48,11 @@ const register = AsyncHandler(async (req, res) => {
             data.avatar = result.secure_url
             data.photo_id = result.public_id
         }
+        if (!result.secure_url) {
+            throw new Error('Something went wrong uploading file')
+        }
     } catch (error) {
-        throw new Error('File upload failed ', error)
+        return next('File upload failed ', error)
     }
 
     data.firstname = firstname
@@ -58,13 +61,13 @@ const register = AsyncHandler(async (req, res) => {
     try {
         const newUser = await User.create(data)
         const { password, ...rest } = newUser._doc
-        return res.status(201).json({ message: 'New User Created', rest })
+        return res.status(201).json(rest)
     } catch (error) {
-        throw new Error('Something went wrong ', error)
+        return next('Something went wrong ', error)
     }
 })
 
-const login = AsyncHandler(async (req, res) => {
+const login = AsyncHandler(async (req, res, next) => {
     const { email, password } = req.body
     try {
         if (!email) {
@@ -89,21 +92,21 @@ const login = AsyncHandler(async (req, res) => {
         res.cookie('token', token, { expiresIn: '1d' })
         res.status(200).json(token)
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const profile = AsyncHandler(async (req, res) => {
+const profile = AsyncHandler(async (req, res, next) => {
     try {
         const user = await User.findById(req.user)
         const { password, ...rest } = user._doc
         return res.status(200).json(rest)
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const updateUser = AsyncHandler(async (req, res) => {
+const updateUser = AsyncHandler(async (req, res, next) => {
     const { firstname, lastname, email } = req.body
     const data = {}
     try {
@@ -132,7 +135,7 @@ const updateUser = AsyncHandler(async (req, res) => {
         const { password, ...rest } = updated._doc
         return res.status(200).json(rest)
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 

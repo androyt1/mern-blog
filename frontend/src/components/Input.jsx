@@ -1,55 +1,35 @@
 import PropTypes from 'prop-types'
 
 const Input = ({
-    label,
     type,
+    name,
     id,
+    value,
     handleChange,
     placeholder,
     className,
-    value,
-    multiple,
-    imageRef,
 }) => {
-    const inputType = type === 'file' ? 'file' : type
-    const requiredType = type === 'file' ? false : true
-
     return (
-        <div className='grid grid-cols-1 gap-y-2 w-full'>
-            {label && (
-                <div className='col-span-1 flex items-center'>
-                    <label htmlFor={id}>
-                        <span className='font-semibold'>{label}</span>
-                    </label>
-                </div>
-            )}
-            <input
-                ref={imageRef}
-                type={inputType}
-                id={id}
-                name={id}
-                onChange={handleChange}
-                placeholder={placeholder}
-                className={`${className}`}
-                value={value}
-                required={requiredType}
-                autoComplete='off'
-                multiple={inputType === 'file' && multiple}
-            />
-        </div>
+        <input
+            type={type}
+            name={name}
+            id={id}
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+            className={`${className} p-2  w-full   rounded-md  placeholder-slate-800 shadow-md shadow-slate-850 text-slate-600 bg-slate-200 `}
+        />
     )
 }
 
 Input.propTypes = {
-    label: PropTypes.string,
+    type: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(['text', 'email', 'password', 'file']).isRequired,
-    placeholder: PropTypes.string.isRequired,
-    className: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
-    value: PropTypes.string,
-    multiple: PropTypes.bool,
-    imageRef: PropTypes.object,
+    placeholder: PropTypes.string.isRequired,
+    className: PropTypes.string,
 }
 
 export default Input

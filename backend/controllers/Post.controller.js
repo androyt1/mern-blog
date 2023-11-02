@@ -3,7 +3,7 @@ import cloudinary from '../config/cloudinary.js'
 import Post from '../models/Post.model.js'
 import User from '../models/User.model.js'
 
-const createPost = AsyncHandler(async (req, res) => {
+const createPost = AsyncHandler(async (req, res, next) => {
     console.log(req.file)
     const { title, description } = req.body
 
@@ -24,7 +24,7 @@ const createPost = AsyncHandler(async (req, res) => {
             data.image = result.secure_url
             data.image_public_id = result.public_id
         } catch (error) {
-            throw new Error(error)
+            return next(error)
         }
         const owner = await User.findById(req.user)
         if (!owner) {
@@ -40,11 +40,11 @@ const createPost = AsyncHandler(async (req, res) => {
             .status(201)
             .json({ message: 'New Post Successfully created', newPost })
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const allPosts = AsyncHandler(async (req, res) => {
+const allPosts = AsyncHandler(async (req, res, next) => {
     try {
         const posts = await Post.find({})
             .populate({
@@ -59,11 +59,11 @@ const allPosts = AsyncHandler(async (req, res) => {
 
         res.status(200).json({ posts: posts })
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const getPostById = AsyncHandler(async (req, res) => {
+const getPostById = AsyncHandler(async (req, res, next) => {
     const postId = req.params.id
     try {
         const post = await Post.findById(postId).populate({
@@ -72,11 +72,11 @@ const getPostById = AsyncHandler(async (req, res) => {
         })
         return res.status(200).json(post)
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const updatePost = AsyncHandler(async (req, res) => {
+const updatePost = AsyncHandler(async (req, res, next) => {
     const postId = req.params.id
     try {
         const { title, description } = req.body
@@ -114,11 +114,11 @@ const updatePost = AsyncHandler(async (req, res) => {
             throw new Error('You are not authorized')
         }
     } catch (error) {
-        throw new Error(error)
+        return next(error)
     }
 })
 
-const likePost = AsyncHandler(async (req, res) => {
+const likePost = AsyncHandler(async (req, res, next) => {
     const postId = req.params.postId
     const userId = req.user
 
@@ -152,11 +152,11 @@ const likePost = AsyncHandler(async (req, res) => {
 
         res.status(200).json({ posts: posts })
     } catch (error) {
-        return res.status(500).json({ error: 'Internal server error', error })
+        return next(error)
     }
 })
 
-const likeSinglePost = AsyncHandler(async (req, res) => {
+const likeSinglePost = AsyncHandler(async (req, res, next) => {
     const postId = req.params.postId
     const userId = req.user
 
@@ -180,7 +180,7 @@ const likeSinglePost = AsyncHandler(async (req, res) => {
 
         return res.status(200).json(post)
     } catch (error) {
-        return res.status(500).json({ error: 'Internal server error', error })
+        return next(error)
     }
 })
 

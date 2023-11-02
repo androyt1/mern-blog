@@ -1,28 +1,22 @@
 import Layout from './components/Layout'
+import LoginPage from './pages/LoginPage'
 import { Routes, Route } from 'react-router-dom'
-import Profile from './pages/Profile'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import PrivateRoute from './components/PrivateRoute'
-import NewPost from './pages/NewPost'
-import Home from './pages/Home'
-import PostDetails from './pages/PostDetails'
+import RegisterPage from './pages/RegisterPage'
+import HomePage from './pages/HomePage'
+import DashBoard from './pages/DashBoard'
+import { PrivateRoute } from './components/PrivateRoute'
 
-const App = () => {
+export default function App() {
     return (
         <Routes>
-            <Route path='/' element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path='/post/:id' element={<PostDetails />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/register' element={<Register />} />
+            <Route path='' element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path='login' element={<LoginPage />} />
+                <Route path='register' element={<RegisterPage />} />
                 <Route element={<PrivateRoute />}>
-                    <Route path='/profile' element={<Profile />} />
-                    <Route path='/create-post' element={<NewPost />} />
+                    <Route path='dashboard' element={<DashBoard />} />
                 </Route>
             </Route>
         </Routes>
     )
 }
-
-export default App
