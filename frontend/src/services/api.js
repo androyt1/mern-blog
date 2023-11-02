@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const Api = axios.create({
-    baseURL: '/api',
+    baseURL: 'https://blog-api-service-ayvy.onrender.com',
 })
 
 const register = async (formdata) =>
